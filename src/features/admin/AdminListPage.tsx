@@ -1,27 +1,17 @@
 import { useMemo, useState } from 'react'
-import { subMonths } from 'date-fns'
 import { useAdminRows } from '@/hooks/queries/useAdminRows'
 import { AdminTable } from './components/AdminTable'
 import { MonthStripLegend } from '@/components/month-strip/MonthStrip'
-import { Select } from '@/components/ui/Select'
 import { Input } from '@/components/ui/Input'
 import { SkeletonRows } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui/ErrorState'
 import { EmptyState } from '@/components/ui/EmptyState'
-import { formatMonthLabel, monthKey, toApiMonthParam } from '@/utils/date'
+import { monthKey, toApiMonthParam } from '@/utils/date'
 import { Search, Users } from 'lucide-react'
 
-function monthOptions() {
-  const now = new Date()
-  return Array.from({ length: 6 }, (_, i) => monthKey(subMonths(now, i)))
-}
-
 export function AdminListPage() {
-  const [month, setMonth] = useState(monthKey())
   const [query, setQuery] = useState('')
-  const { data: rows, isLoading, isError, refetch } = useAdminRows(toApiMonthParam(month))
-
-  const options = useMemo(monthOptions, [])
+  const { data: rows, isLoading, isError, refetch } = useAdminRows(toApiMonthParam(monthKey()))
 
   const filteredRows = useMemo(() => {
     if (!rows) return rows
