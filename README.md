@@ -27,18 +27,14 @@ Requires `VITE_API_BASE_URL` pointing at a running backend — set it in `.env.l
 VITE_API_BASE_URL=https://your-backend-url
 ```
 
-If that URL is an ngrok free-tier tunnel, `api/client.ts` already sends
-`ngrok-skip-browser-warning: true` on every request so you don't hit ngrok's HTML
-interstitial instead of the real API — harmless against a normal deployed backend.
-
 ## Layout
 
-Four personas, one app, switched via the header nav (the API has no auth):
+Four personas, one app, switched via the header nav:
 
 - `/patient` — daily check-in + conditional follow-ups
 - `/care-manager` — work list + flag detail + actions
 - `/admin` — patient roster table
-- `/physician` — printable monthly summary
+- `/physician` — monthly summary
 
 ## Architecture
 

@@ -50,15 +50,6 @@ export function AdminListPage() {
               className="pl-9"
             />
           </div>
-          <div className="w-44 shrink-0">
-            <Select value={month} onChange={(e) => setMonth(e.target.value)} aria-label="Month">
-              {options.map((m) => (
-                <option key={m} value={m}>
-                  {formatMonthLabel(m)}
-                </option>
-              ))}
-            </Select>
-          </div>
         </div>
       </div>
 

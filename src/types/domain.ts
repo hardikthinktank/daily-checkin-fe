@@ -6,8 +6,6 @@
 
 export type FlagLevel = 'Note' | 'Review' | 'Urgent' | 'Critical'
 
-export const FLAG_LEVELS: FlagLevel[] = ['Note', 'Review', 'Urgent', 'Critical']
-
 export type FlagStatus = 'open' | 'acknowledged' | 'escalated' | 'resolved'
 
 export type ActorType = 'human' | 'system'

@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useWorkList } from '@/hooks/queries/useWorkList'
+import { usePatients } from '@/hooks/queries/usePatients'
 import { WorkListTable } from './components/WorkListTable'
 import { FlagDetailPanel } from './components/FlagDetailPanel'
 import { ActorSwitcher } from './components/ActorSwitcher'
 import { Select } from '@/components/ui/Select'
-import { ArrowLeft } from 'lucide-react'
+import { Input } from '@/components/ui/Input'
+import { ArrowLeft, Search } from 'lucide-react'
 import { cn } from '@/lib/cn'
 import type { FlagLevel } from '@/types/domain'
 
@@ -20,29 +22,55 @@ export function WorkListPage() {
   const { flagId } = useParams()
   const navigate = useNavigate()
   const [level, setLevel] = useState<FlagLevel | ''>('')
+  const [query, setQuery] = useState('')
 
   // The worklist endpoint takes no filter params — filter client-side over
   // the full (server-sorted) result.
   const { data: allFlags, isLoading, isError, refetch } = useWorkList()
-  const flags = useMemo(() => (level ? allFlags?.filter((f) => f.level === level) : allFlags), [allFlags, level])
+  const { data: patients } = usePatients()
+  const flags = useMemo(() => {
+    const byLevel = level ? allFlags?.filter((f) => f.level === level) : allFlags
+    if (!byLevel) return byLevel
+
+    const q = query.trim().toLowerCase()
+    if (!q) return byLevel
+
+    return byLevel.filter((flag) => {
+      const patient = patients?.find((p) => p.id === flag.patientId)
+      const searchable = [patient?.name, patient?.mrn, patient?.diagnosis].filter(Boolean).join(' ').toLowerCase()
+      return searchable.includes(q)
+    })
+  }, [allFlags, level, patients, query])
 
   return (
     <div>
       <div className="mb-4 flex flex-col gap-4">
         <ActorSwitcher />
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h1 className="text-lg font-semibold text-slate-900">Care manager work list</h1>
             <p className="text-sm text-slate-500">Sorted by level, most urgent first. Notes are recorded but not shown here.</p>
           </div>
-          <div className="w-40 shrink-0">
-            <Select value={level} onChange={(e) => setLevel(e.target.value as FlagLevel | '')} aria-label="Filter by level">
-              {LEVEL_OPTIONS.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
-                </option>
-              ))}
-            </Select>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="relative w-64">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" aria-hidden="true" />
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search patient, MRN, diagnosis"
+                aria-label="Search patient worklist"
+                className="pl-9"
+              />
+            </div>
+            <div className="w-40 shrink-0">
+              <Select value={level} onChange={(e) => setLevel(e.target.value as FlagLevel | '')} aria-label="Filter by level">
+                {LEVEL_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
           </div>
         </div>
       </div>
