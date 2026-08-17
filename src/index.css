@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Flag-level color language, shared by every screen that shows a level
+     (FlagLevelBadge, MonthStrip, charts). Keeping it in one place is what
+     stops the colors from drifting screen to screen. */
+  --color-level-note: #475569;
+  --color-level-note-soft: #f1f5f9;
+  --color-level-note-border: #cbd5e1;
+
+  --color-level-review: #b45309;
+  --color-level-review-soft: #fef3c7;
+  --color-level-review-border: #fcd34d;
+
+  --color-level-urgent: #c2410c;
+  --color-level-urgent-soft: #ffedd5;
+  --color-level-urgent-border: #fdba74;
+
+  --color-level-critical: #b91c1c;
+  --color-level-critical-soft: #fee2e2;
+  --color-level-critical-border: #fca5a5;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
